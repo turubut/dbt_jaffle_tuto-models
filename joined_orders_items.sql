@@ -11,7 +11,7 @@ select * from
 (select 
 id,
 customer,
-,
+ordered_at,
 store_id,
 subtotal,
 tax_paid,
