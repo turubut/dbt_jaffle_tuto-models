@@ -7,35 +7,43 @@
     partition_by={'field': 'ordered_at', 'data_type': 'timestamp'}
 ) }}
 
-select 
-ro.id,
-ro.customer,
-ro.ordered_at,
-ro.store_id,
-ro.subtotal,
-ro.tax_paid,
-ro.order_total,
-ri.id as item_id,
-ri.sku
-from
-(select 
-id,
-customer,
-ordered_at,
-store_id,
-subtotal,
-tax_paid,
-order_total
-from {{ source('raw', 'raw_orders') }}) ro 
-left join 
-(select
-id,
-order_id,
-sku
-from {{ source('raw', 'raw_items') }} ri
-) as ri
-on ro.id  = ri.order_id
+WITH orders AS (
+    SELECT
+    	id,
+		customer,
+		ordered_at,
+		store_id,
+		subtotal,
+		tax_paid,
+		order_total
+    FROM {{ source('raw', 'raw_orders') }}
+),
+
+items AS (
+    SELECT 
+		id,
+		order_id,
+		sku
+    FROM {{ source('raw', 'raw_items') }}
+)
+
+SELECT
+    o.id,
+	o.customer,
+	o.ordered_at,
+	o.store_id,
+	o.subtotal,
+	o.tax_paid,
+	o.order_total,
+	i.id,
+	i.order_id,
+	i.sku  
+FROM orders o
+JOIN items i
+    ON o.order_id = i.order_id
 
 {% if is_incremental() %}
-WHERE ro.ordered_at >= (COALESCE((SELECT MAX(ordered_at) FROM {{ this }}), '2016-09-01'::timestamp) + INTERVAL '2 DAY')
+    -- Load records starting from the last loaded date (max ordered_at from previous loads)
+    -- Only load data for the next 2 days
+    WHERE o.ordered_at >= (COALESCE((SELECT MAX(ordered_at) FROM {{ this }}), '2016-09-01'::timestamp) + INTERVAL '2 DAY')
 {% endif %}
