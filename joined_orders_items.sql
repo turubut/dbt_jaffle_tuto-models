@@ -25,7 +25,6 @@ sku
 from {{ source('raw', 'raw_items') }} ri
 ) as ri
 on ro.id  = ri.order_id
-order by ordered_at desc;
 
 
 {% if is_incremental() %}
