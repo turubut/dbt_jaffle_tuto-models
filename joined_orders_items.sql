@@ -14,7 +14,7 @@ WITH orders AS (
         order_date,
         total_amount,
         created_at
-    FROM {{ ref('orders') }}
+    FROM {{ source('raw', 'raw_orders') }}
 ),
 items AS (
     SELECT 
@@ -23,7 +23,7 @@ items AS (
         product_id,
         quantity,
         price
-    FROM {{ ref('items') }}
+    FROM {{ source('raw', 'raw_items') }}
 )
 
 SELECT
