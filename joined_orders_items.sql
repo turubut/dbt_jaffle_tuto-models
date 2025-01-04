@@ -38,7 +38,6 @@ on ro.id  = ri.order_id
 where ro.ordered_at < '2016-09-04'
 
 {% if is_incremental() %}
-    WHERE 1=1
-    AND ro.ordered_at >= MAX(ordered_at) - INTERVAL '2 DAYS'
+    WHERE ro.ordered_at >= MAX(ordered_at) - INTERVAL '2 DAYS'
     AND ro.ordered_at < MAX(ordered_at) + INTERVAL '2 DAYS'
 {% endif %}
