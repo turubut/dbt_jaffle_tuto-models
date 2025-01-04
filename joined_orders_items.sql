@@ -37,5 +37,5 @@ from {{ source('raw', 'raw_items') }} ri
 on ro.id  = ri.order_id
 
 {% if is_incremental() %}
-    WHERE ro.ordered_at > (SELECT MAX(ordered_at) FROM {{ this }})
+    WHERE ro.ordered_at BETWEEN '2016-09-01' + INTERVAL '2 DAYS' AND MAX(ordered_at)
 {% endif %}
