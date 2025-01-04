@@ -35,9 +35,7 @@ sku
 from {{ source('raw', 'raw_items') }} ri
 ) as ri
 on ro.id  = ri.order_id
-where ro.ordered_at < '2016-09-04'
 
 {% if is_incremental() %}
-    WHERE ro.ordered_at >= MAX(ordered_at) - INTERVAL '2 DAYS'
-    AND ro.ordered_at < MAX(ordered_at) + INTERVAL '2 DAYS'
+WHERE o.created_at >= (COALESCE((SELECT MAX(created_at) FROM {{ this }}), '2016-09-01'::timestamp) + INTERVAL '2 DAY')
 {% endif %}
