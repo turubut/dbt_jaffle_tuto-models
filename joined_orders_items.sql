@@ -37,5 +37,5 @@ from {{ source('raw', 'raw_items') }} ri
 on ro.id  = ri.order_id
 
 {% if is_incremental() %}
-WHERE ro.created_at >= (COALESCE((SELECT MAX(created_at) FROM {{ this }}), '2016-09-01'::timestamp) + INTERVAL '2 DAY')
+WHERE ro.ordered_at >= (COALESCE((SELECT MAX(ordered_at) FROM {{ this }}), '2016-09-01'::timestamp) + INTERVAL '2 DAY')
 {% endif %}
