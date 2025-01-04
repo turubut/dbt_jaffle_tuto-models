@@ -35,7 +35,7 @@ SELECT
 	o.subtotal,
 	o.tax_paid,
 	o.order_total,
-	i.id,
+	i.id as item_id,
 	i.sku  
 FROM orders o
 JOIN items i
