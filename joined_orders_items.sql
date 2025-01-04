@@ -7,7 +7,17 @@
     partition_by={'field': 'ordered_at', 'data_type': 'timestamp'}
 ) }}
 
-select * from
+select 
+ro.id,
+ro.customer,
+ro.ordered_at,
+ro.store_id,
+ro.subtotal,
+ro.tax_paid,
+ro.order_total,
+ri.id as item_id,
+ri.sku
+from
 (select 
 id,
 customer,
@@ -25,6 +35,7 @@ sku
 from {{ source('raw', 'raw_items') }} ri
 ) as ri
 on ro.id  = ri.order_id
+order by ordered_at desc;
 
 
 {% if is_incremental() %}
