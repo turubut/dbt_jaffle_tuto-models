@@ -9,7 +9,7 @@
 
 WITH orders AS (
     SELECT
-    	id,
+    		id,
 		customer,
 		ordered_at,
 		store_id,
@@ -28,7 +28,7 @@ items AS (
 )
 
 SELECT
-    o.id,
+    	o.id,
 	o.customer,
 	o.ordered_at,
 	o.store_id,
@@ -36,11 +36,10 @@ SELECT
 	o.tax_paid,
 	o.order_total,
 	i.id,
-	i.order_id,
 	i.sku  
 FROM orders o
 JOIN items i
-    ON o.order_id = i.order_id
+    ON o.id = i.order_id
 
 {% if is_incremental() %}
     -- Load records starting from the last loaded date (max ordered_at from previous loads)
